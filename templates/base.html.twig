@@ -1,17 +1,149 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+	<head>
+		<meta charset="UTF-8">
+		<title>
+			{% block title %}Welcome!
+			{% endblock %}
+		</title>
+		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: 'Segoe UI', sans-serif;
+				background: #0d0d0d;
+				color: #fff;
+				min-height: 100vh;
+			}
+
+			nav {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 1.2rem 3rem;
+				background: rgba(0, 0, 0, 0.6);
+				backdrop-filter: blur(10px);
+				position: fixed;
+				width: 100%;
+				top: 0;
+				z-index: 100;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.nav-logo {
+				font-size: 1.5rem;
+				font-weight: 700;
+				color: #e50914;
+				letter-spacing: 2px;
+				text-decoration: none;
+			}
+
+			.nav-links {
+				display: flex;
+				gap: 1rem;
+			}
+
+			.nav-links a {
+				color: #ccc;
+				text-decoration: none;
+				padding: 0.5rem 1.2rem;
+				border-radius: 25px;
+				font-size: 0.95rem;
+				transition: all 0.3s ease;
+				border: 1px solid transparent;
+			}
+
+			.nav-links a:hover {
+				color: #fff;
+				border-color: #e50914;
+				background: rgba(229, 9, 20, 0.15);
+			}
+			.flash-error {
+				position: fixed;
+				top: 80px;
+				left: 50%;
+				transform: translateX(-50%);
+				background: rgba(229, 9, 20, 0.9);
+				color: #fff;
+				padding: 1rem 2rem;
+				border-radius: 8px;
+				font-weight: 600;
+				z-index: 200;
+				backdrop-filter: blur(10px);
+				border: 1px solid #e50914;
+				animation: fadeIn 0.3s ease;
+			}
+
+			.flash-success {
+				position: fixed;
+				top: 80px;
+				left: 50%;
+				transform: translateX(-50%);
+				background: rgba(39, 174, 96, 0.9);
+				color: #fff;
+				padding: 1rem 2rem;
+				border-radius: 8px;
+				font-weight: 600;
+				z-index: 200;
+				backdrop-filter: blur(10px);
+				border: 1px solid #27ae60;
+				animation: fadeIn 0.3s ease;
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateX(-50%) translateY(-10px);
+				}
+				to {
+					opacity: 1;
+					transform: translateX(-50%) translateY(0);
+				}
+			}
+		</style>
+
+		{% block stylesheets %}{% endblock %}
+
+		{% block javascripts %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
+		{% endblock %}
+	</head>
+	<body>
+		{# NAVBAR - en HAUT, avant le body #}
+		{% block navbar %}
+			<nav>
+				<a href="{{ path('app_home') }}" class="nav-logo">🎬 SymfonySandBox Cinéma</a>
+				<div class="nav-links">
+					<a href="{{ path('app_home') }}">Accueil</a>
+					<a href="{{ path('app_movies_index') }}">Films</a>
+					{% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('app_movies_new') }}">Ajouter un film</a> 				
+                    {% endif %}
+					<a href="#">Contact</a>
+				</div>
+			</nav>
+			{% for message in app.flashes('error') %}
+				<div class="flash-error">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			{% for message in app.flashes('success') %}
+				<div class="flash-success">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+		{% endblock %}
+
+		{% block body %}{% endblock %}
+	</body>
 </html>

@@ -1,0 +1,257 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	{{ movie.title }}
+	- MovieDB
+{% endblock %}
+
+{% block body %}
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Segoe UI', sans-serif;
+			background: #0d0d0d;
+			color: #fff;
+			min-height: 100vh;
+		}
+
+		.movie-hero {
+			min-height: 70vh;
+			background: linear-gradient(to right, rgba(13,13,13,1) 40%, rgba(13,13,13,0.4) 100%), linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(13, 13, 13, 1) 100%), url('https://image.tmdb.org/t/p/original{{ movie.backdrop_path }}') center/cover no-repeat;
+			display: flex;
+			align-items: center;
+			padding: 8rem 3rem 4rem;
+			gap: 3rem;
+		}
+
+		.movie-poster img {
+			width: 250px;
+			border-radius: 12px;
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.movie-details {
+			max-width: 700px;
+		}
+
+		.movie-badge {
+			display: inline-block;
+			background: #e50914;
+			color: #fff;
+			font-size: 0.75rem;
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			padding: 0.3rem 0.8rem;
+			border-radius: 4px;
+			margin-bottom: 1rem;
+		}
+
+		.movie-details h1 {
+			font-size: 3rem;
+			font-weight: 800;
+			line-height: 1.1;
+			margin-bottom: 1rem;
+		}
+
+		.movie-meta {
+			display: flex;
+			gap: 1.5rem;
+			margin-bottom: 1.5rem;
+			flex-wrap: wrap;
+		}
+
+		.meta-item {
+			color: #aaa;
+			font-size: 0.95rem;
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+
+		.meta-item strong {
+			color: #fff;
+		}
+
+		.movie-rating {
+			background: #e50914;
+			color: #fff;
+			padding: 0.4rem 1rem;
+			border-radius: 20px;
+			font-weight: 700;
+			font-size: 1rem;
+		}
+
+		.movie-overview {
+			color: #ccc;
+			font-size: 1.05rem;
+			line-height: 1.7;
+			margin-bottom: 2rem;
+		}
+
+		.movie-genres {
+			display: flex;
+			gap: 0.5rem;
+			flex-wrap: wrap;
+			margin-bottom: 2rem;
+		}
+
+		.genre-tag {
+			background: rgba(255, 255, 255, 0.08);
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			color: #fff;
+			padding: 0.3rem 0.9rem;
+			border-radius: 20px;
+			font-size: 0.85rem;
+			transition: border-color 0.3s;
+		}
+
+		.genre-tag:hover {
+			border-color: #e50914;
+		}
+
+		.movie-actions {
+			display: flex;
+			gap: 1rem;
+		}
+
+		.btn-primary {
+			background: #e50914;
+			color: #fff;
+			padding: 0.9rem 2rem;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 1rem;
+			transition: background 0.3s;
+			display: inline-block;
+		}
+
+		.btn-primary:hover {
+			background: #c40812;
+		}
+
+		.btn-secondary {
+			background: rgba(255, 255, 255, 0.1);
+			color: #fff;
+			padding: 0.9rem 2rem;
+			border-radius: 8px;
+			text-decoration: none;
+			font-weight: 600;
+			font-size: 1rem;
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			transition: background 0.3s;
+			display: inline-block;
+		}
+
+		.btn-secondary:hover {
+			background: rgba(255, 255, 255, 0.2);
+		}
+
+		@media(max-width: 768px) {
+			.movie-hero {
+				flex-direction: column;
+				padding: 6rem 1.5rem 3rem;
+				text-align: center;
+			}
+
+			.movie-poster img {
+				width: 180px;
+			}
+			.movie-details h1 {
+				font-size: 2rem;
+			}
+			.movie-meta {
+				justify-content: center;
+			}
+			.movie-genres {
+				justify-content: center;
+			}
+			.movie-actions {
+				justify-content: center;
+			}
+		}
+		.btn-delete {
+			background: rgba(229, 9, 20, 0.2);
+			color: #e50914;
+			padding: 0.9rem 2rem;
+			border-radius: 8px;
+			font-weight: 600;
+			font-size: 1rem;
+			border: 1px solid #e50914;
+			cursor: pointer;
+			transition: all 0.3s;
+		}
+
+		.btn-delete:hover {
+			background: #e50914;
+			color: #fff;
+		}
+	</style>
+
+	<section class="movie-hero">
+		<div class="movie-poster">
+			{% if movie.poster_path %}
+				<img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
+			{% else %}
+				<div style="width:250px; height:375px; background:#1a1a1a; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:4rem;">🎥</div>
+			{% endif %}
+		</div>
+
+		<div class="movie-details">
+			<span class="movie-badge">🎬 Détails du film</span>
+
+			<h1>{{ movie.title }}</h1>
+
+			<div class="movie-meta">
+				<span class="meta-item">📅
+					<strong>{{ movie.release_date ?: 'Inconnue' }}</strong>
+				</span>
+				<span class="meta-item">⏱
+					<strong>{{ movie.runtime ? movie.runtime ~ ' min' : 'N/A' }}</strong>
+				</span>
+				<span class="meta-item">🌍
+					<strong>{{ movie.original_language|upper }}</strong>
+				</span>
+				<span class="movie-rating">⭐
+					{{ movie.vote_average ? movie.vote_average|number_format(1) : 'N/A' }}/10</span>
+			</div>
+
+			{% if movie.genres %}
+				<div class="movie-genres">
+					{% for genre in movie.genres %}
+						<span class="genre-tag">{{ genre.name }}</span>
+					{% endfor %}
+				</div>
+			{% endif %}
+
+			<p class="movie-overview">{{ movie.overview ?: 'Aucun synopsis disponible.' }}</p>
+			{% if is_granted('ROLE_ADMIN') %}
+				<div class="movie-actions">
+					<a href="{{ path('app_movies_index') }}" class="btn-secondary">← Retour</a>
+					<a href="{{ path('app_movies_edit', {'id': movie.id}) }}" class="btn-primary">✏️ Modifier</a>
+					<form method="post" action="{{ path('app_movies_delete', {'id': movie.id}) }}" style="display:inline;">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ movie.id) }}">
+						<button type="submit" class="btn-delete" onclick="return confirm('Supprimer ce film ?')">
+							🗑️ Supprimer
+						</button>
+					</form>
+				</div>
+			{% endif %}
+
+			<div class="movie-actions">
+				<a href="{{ path('app_movies_index') }}" class="btn-secondary">← Retour aux films</a>
+				{% if movie.homepage %}
+					<a href="{{ movie.homepage }}" target="_blank" class="btn-primary">Site officiel</a>
+				{% endif %}
+			</div>
+		</div>
+	</section>
+
+{% endblock %}

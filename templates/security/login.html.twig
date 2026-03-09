@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - MovieDB{% endblock %}
+
+{# NAVBAR MASQUÉE #}
+{% block navbar %}{% endblock %}
+
+{% block body %}
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #0d0d0d;
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+    }
+
+    .login-container {
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
+        max-width: 420px;
+        padding: 3rem;
+        box-shadow: 0 25px 45px rgba(0,0,0,0.5);
+    }
+
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .logo {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #e50914;
+        letter-spacing: -1px;
+        margin-bottom: 0.3rem;
+    }
+
+    .login-subtitle {
+        color: #ccc;
+        font-size: 1.1rem;
+    }
+
+    .error-message {
+        background: rgba(229, 9, 20, 0.3);
+        border: 1px solid #e50914;
+        color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
+    }
+
+    .form-group {
+        margin-bottom: 1.8rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-weight: 600;
+        color: #e5e5e5;
+        font-size: 0.95rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 1rem 1.2rem;
+        background: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 6px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control::placeholder {
+        color: #999;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #e50914;
+        background: rgba(255,255,255,0.15);
+        box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+    }
+
+    .login-btn {
+        width: 100%;
+        padding: 1rem 0;
+        background: #e50914;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.5rem;
+    }
+
+    .login-btn:hover {
+        background: #c40812;
+        transform: translateY(-1px);
+    }
+
+    .user-info {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        color: #ccc;
+        font-size: 0.95rem;
+    }
+
+    .user-info a {
+        color: #e50914;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .user-info a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+        .login-container {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-header">
+        <h1 class="logo">🎬 Symfony</h1>
+        <p class="login-subtitle">Connectez-vous pour continuer</p>
+    </div>
+
+    <form method="post">
+        {% if error %}
+            <div class="error-message">
+                {{ error.messageKey|trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="user-info">
+                Vous êtes connecté(e) en tant que <strong>{{ app.user.userIdentifier }}</strong>
+                <br><a href="{{ logout_path() }}">Se déconnecter</a>
+            </div>
+        {% else %}
+            <div class="form-group">
+                <label for="username">📧 Email</label>
+                <input 
+                    type="email" 
+                    value="{{ last_username }}" 
+                    name="_username" 
+                    id="username" 
+                    class="form-control" 
+                    autocomplete="email" 
+                    required 
+                    autofocus
+                    placeholder="votre@email.com"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="password">🔒 Mot de passe</label>
+                <input 
+                    type="password" 
+                    name="_password" 
+                    id="password" 
+                    class="form-control" 
+                    autocomplete="current-password" 
+                    required
+                    placeholder="••••••••"
+                >
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="login-btn" type="submit">
+                Se connecter
+            </button>
+        {% endif %}
+    </form>
+</div>
+
+{% endblock %}
