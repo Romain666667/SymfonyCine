@@ -1,20 +1,213 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ContactController!{% endblock %}
+{% block title %}Contact - SymfonySandBox{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        font-family: 'Segoe UI', sans-serif;
+        background: #0d0d0d;
+        color: #fff;
+        min-height: 100vh;
+    }
+
+    .contact-section {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 8rem 2rem 4rem;
+    }
+
+    .page-header {
+        margin-bottom: 3rem;
+    }
+
+    .page-badge {
+        display: inline-block;
+        background: #e50914;
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+    }
+
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-header h1 span { color: #e50914; }
+
+    .page-header p {
+        color: #aaa;
+        font-size: 1.05rem;
+        line-height: 1.6;
+    }
+
+    .contact-card {
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 16px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #e5e5e5;
+        font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #666; }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #e50914;
+        background: rgba(255,255,255,0.12);
+        box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+    }
+
+    .form-group textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+    .btn-primary {
+        background: #e50914;
+        color: #fff;
+        padding: 0.9rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 100%;
+        text-align: center;
+    }
+
+    .btn-primary:hover { background: #c40812; }
+
+    .contact-info {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .info-card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .info-card:hover {
+        border-color: #e50914;
+        transform: translateY(-4px);
+    }
+
+    .info-icon {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .info-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+    }
+
+    .info-card p {
+        color: #888;
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+        .contact-section { padding: 6rem 1.5rem 3rem; }
+        .contact-info { grid-template-columns: 1fr; }
+        .page-header h1 { font-size: 2rem; }
+    }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<section class="contact-section">
+    <div class="page-header">
+        <span class="page-badge">📬 Contact</span>
+        <h1>Nous <span>Contacter</span></h1>
+        <p>Une question, une suggestion ? On vous répond dans les plus brefs délais.</p>
+    </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/SymfonySandbox/src/Controller/ContactController.php</code></li>
-        <li>Your template at <code>/var/www/html/SymfonySandbox/templates/contact/index.html.twig</code></li>
-    </ul>
-</div>
+    <div class="contact-card">
+        <form method="post">
+            <div class="form-group">
+                <label for="name">👤 Nom complet</label>
+                <input type="text" id="name" name="name" placeholder="Jean Dupont" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">📧 Email</label>
+                <input type="email" id="email" name="email" placeholder="jean@example.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="message">💬 Message</label>
+                <textarea id="message" name="message" placeholder="Votre message..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Envoyer le message →
+            </button>
+        </form>
+    </div>
+
+    <div class="contact-info">
+        <div class="info-card">
+            <div class="info-icon">📍</div>
+            <h3>Adresse</h3>
+            <p>Paris, France</p>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">📧</div>
+            <h3>Email</h3>
+            <p>contact@symfonycinema.fr</p>
+        </div>
+        <div class="info-card">
+            <div class="info-icon">🕐</div>
+            <h3>Disponibilité</h3>
+            <p>Lun - Ven, 9h - 18h</p>
+        </div>
+    </div>
+</section>
+
 {% endblock %}

@@ -1,0 +1,201 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Noter {{ movie.Title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .rating-wrapper {
+        padding-top: 80px;
+        min-height: 100vh;
+        background: #0d0d0d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .rating-box {
+        width: 100%;
+        max-width: 560px;
+        background: #141414;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        margin: 2rem 1rem;
+    }
+
+    .rating-box-header {
+        background: linear-gradient(135deg, #1a0000, #3a0000);
+        border-bottom: 2px solid #e50914;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .rating-box-header h2 {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 0.3rem;
+    }
+
+    .rating-box-header p {
+        color: #e50914;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .rating-box-body {
+        padding: 2rem;
+    }
+
+    .form-label-custom {
+        display: block;
+        color: #aaa;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }
+
+    /* Stars radio */
+    .stars-group {
+        display: flex;
+        gap: 0.8rem;
+        margin-bottom: 2rem;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    .stars-group input[type="radio"] {
+        display: none;
+    }
+
+    .stars-group label {
+        font-size: 2.2rem;
+        cursor: pointer;
+        color: #333;
+        transition: color 0.2s, transform 0.2s;
+        filter: grayscale(1);
+    }
+
+    .stars-group input[type="radio"]:checked ~ label,
+    .stars-group label:hover,
+    .stars-group label:hover ~ label {
+        color: #f39c12;
+        filter: grayscale(0);
+        transform: scale(1.15);
+    }
+
+    .comment-field textarea {
+        width: 100%;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 10px;
+        color: #fff;
+        padding: 1rem;
+        font-size: 0.95rem;
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.3s;
+        font-family: inherit;
+    }
+
+    .comment-field textarea:focus {
+        border-color: #e50914;
+    }
+
+    .comment-field textarea::placeholder {
+        color: #555;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-submit {
+        flex: 1;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 25px;
+        background: #e50914;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-submit:hover {
+        background: #b20710;
+        transform: translateY(-2px);
+    }
+
+    .btn-cancel {
+        flex: 1;
+        padding: 0.9rem;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 25px;
+        background: transparent;
+        color: #ccc;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s;
+    }
+
+    .btn-cancel:hover {
+        border-color: #fff;
+        color: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="rating-wrapper">
+    <div class="rating-box">
+
+        <div class="rating-box-header">
+            <h2>✍️ Laisser un avis</h2>
+            <p>{{ movie.Title }}</p>
+        </div>
+
+        <div class="rating-box-body">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            {# Score #}
+            <label class="form-label-custom">Votre note</label>
+            <div class="stars-group">
+                {% for child in form.score %}
+                    {{ form_widget(child) }}
+                    <label for="{{ child.vars.id }}">⭐</label>
+                {% endfor %}
+            </div>
+            {{ form_errors(form.score) }}
+
+            {# Commentaire #}
+            <div class="comment-field">
+                <label class="form-label-custom">Commentaire (optionnel)</label>
+                {{ form_widget(form.comment, {
+                    'attr': {
+                        'rows': 4,
+                        'placeholder': 'Partagez votre avis sur ce film...'
+                    }
+                }) }}
+                {{ form_errors(form.comment) }}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Envoyer ✅</button>
+                <a href="{{ path('app_movies_show', {'id': movie.id}) }}" class="btn-cancel">Annuler</a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+when@dev:
+    sentry:
+        dsn: '%env(SENTRY_DSN)%'
+        options:
+            enable_logs: true
+            environment: "%kernel.environment%"
+            # send_default_pii: true
+            ignore_exceptions:
+                - 'Symfony\Component\ErrorHandler\Error\FatalError'
+                - 'Symfony\Component\Debug\Exception\FatalErrorException'
+        register_error_listener: false
+#       register_error_handler: true
+
+    monolog:
+        handlers:
+            sentry:
+                type: service
+                id: Sentry\Monolog\Handler
+            sentry_logs:
+                type: service
+                id: Sentry\SentryBundle\Monolog\LogsHandler
+
+    services:
+        Sentry\Monolog\Handler:
+            arguments:
+                $hub: '@Sentry\State\HubInterface'
+                $level: !php/const Monolog\Logger::INFO
+                $fillExtraContext: true
+        Sentry\SentryBundle\Monolog\LogsHandler:
+            arguments:
+                - !php/const Monolog\Logger::INFO
+                - true

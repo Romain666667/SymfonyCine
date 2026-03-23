@@ -1,254 +1,350 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Films - SymfonySandBox{% endblock %}
+{% block title %}Films{% endblock %}
 
-{% block body %}
+{% block stylesheets %}
 <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-        font-family: 'Segoe UI', sans-serif;
-        background: #0d0d0d;
-        color: #fff;
+    .page-wrapper {
+        padding-top: 100px;
         min-height: 100vh;
+        background: #0d0d0d;
     }
 
-    /* HERO */
-    .hero {
-        min-height: 60vh;
-        background: 
-            linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 60%, #0d0d0d 100%),
-            url('https://image.tmdb.org/t/p/original/628Dep6AxEtDxjZoGP78TsOxYbK.jpg') center/cover no-repeat;
-        display: flex;
-        align-items: center;
-        padding: 0 3rem;
+    .page-header {
+        text-align: center;
+        padding: 3rem 1rem 2rem;
     }
 
-    .hero-content {
+    .page-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #fff;
+        letter-spacing: 1px;
+    }
+
+    .page-header h1 span {
+        color: #e50914;
+    }
+
+    .search-bar {
         max-width: 600px;
-        margin-top: 80px;
+        margin: 0 auto 3rem;
+        padding: 0 1rem;
+        display: flex;
+        gap: 0.5rem;
     }
 
-    .hero-badge {
-        display: inline-block;
+    .search-bar input {
+        flex: 1;
+        padding: 0.8rem 1.2rem;
+        border-radius: 25px;
+        border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border 0.3s;
+    }
+
+    .search-bar input:focus {
+        border-color: #e50914;
+    }
+
+    .search-bar input::placeholder {
+        color: #888;
+    }
+
+    .search-bar button {
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        border: none;
         background: #e50914;
         color: #fff;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        padding: 0.3rem 0.8rem;
-        border-radius: 4px;
-        margin-bottom: 1.2rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
     }
 
-    .hero h1 {
-        font-size: 3.5rem;
-        font-weight: 800;
-        line-height: 1.1;
-        margin-bottom: 1rem;
+    .search-bar button:hover {
+        background: #b20710;
     }
 
-    .hero h1 span { color: #e50914; }
+    .search-bar .reset-btn {
+        padding: 0.8rem 1.2rem;
+        border-radius: 25px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: transparent;
+        color: #ccc;
+        cursor: pointer;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s;
+    }
 
-    .hero p {
-        font-size: 1.1rem;
-        color: #aaa;
+    .search-bar .reset-btn:hover {
+        border-color: #e50914;
+        color: #fff;
+    }
+
+    .results-info {
+        text-align: center;
+        color: #888;
         margin-bottom: 2rem;
-        line-height: 1.6;
+        font-size: 0.9rem;
     }
 
-    /* GRID */
-    .movies-section {
-        padding: 5rem 3rem;
-        max-width: 1400px;
-        margin: 0 auto;
+    .results-info strong {
+        color: #fff;
     }
 
     .movies-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+        padding: 0 3rem 4rem;
+        max-width: 1400px;
+        margin: 0 auto;
     }
 
     .movie-card {
-        background: rgba(255,255,255,0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255,255,255,0.1);
         border-radius: 12px;
         overflow: hidden;
-        transition: transform 0.3s, border-color 0.3s;
-        display: flex;
-        flex-direction: column;
+        background: #1a1a1a;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+        position: relative;
     }
 
     .movie-card:hover {
-        transform: translateY(-8px);
-        border-color: #e50914;
-        box-shadow: 0 20px 40px rgba(229, 9, 20, 0.2);
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(229, 9, 20, 0.3);
     }
 
-    .movie-poster-container {
-        height: 380px;
-        overflow: hidden;
-    }
-
-    .movie-poster {
+    .movie-card img {
         width: 100%;
-        height: 100%;
+        aspect-ratio: 2/3;
         object-fit: cover;
-        transition: transform 0.3s ease;
+        display: block;
     }
 
-    .movie-card:hover .movie-poster {
-        transform: scale(1.05);
-    }
-
-    .movie-no-poster {
-        height: 100%;
-        background: #1a1a1a;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 4rem;
-        color: #666;
-    }
-
-    .movie-content {
-        padding: 1.8rem;
-        flex-grow: 1;
+    .movie-card .no-poster {
+        width: 100%;
+        aspect-ratio: 2/3;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
         display: flex;
         flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #555;
+        font-size: 3rem;
     }
 
-    .movie-title {
-        font-size: 1.3rem;
+    .movie-card .no-poster span {
+        font-size: 0.8rem;
+        margin-top: 0.5rem;
+        color: #444;
+    }
+
+    .movie-card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0,0,0,0.95));
+        padding: 2rem 1rem 1rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .movie-card:hover .movie-card-overlay {
+        opacity: 1;
+    }
+
+    .movie-card-overlay h5 {
+        font-size: 0.95rem;
         font-weight: 700;
         color: #fff;
-        margin-bottom: 0.6rem;
-        line-height: 1.3;
+        margin-bottom: 0.3rem;
     }
 
-    .movie-meta {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
+    .movie-card-overlay p {
+        font-size: 0.75rem;
         color: #aaa;
-        font-size: 0.9rem;
+        margin-bottom: 0.8rem;
     }
 
-    .movie-rating {
-        background: #e50914;
-        color: #fff;
-        padding: 0.25rem 0.7rem;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
-
-    .movie-overview {
-        color: #bbb;
-        font-size: 0.9rem;
-        line-height: 1.6;
-        flex-grow: 1;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        margin-bottom: 1.5rem;
-    }
-
-    .movie-actions { margin-top: auto; }
-
-    .btn-primary {
+    .movie-card-overlay a.btn-voir {
         display: block;
+        text-align: center;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
         background: #e50914;
         color: #fff;
-        padding: 0.8rem 1.5rem;
-        border-radius: 8px;
         text-decoration: none;
+        font-size: 0.8rem;
         font-weight: 600;
-        font-size: 0.95rem;
-        text-align: center;
         transition: background 0.3s;
     }
 
-    .btn-primary:hover { background: #c40812; }
+    .movie-card-overlay a.btn-voir:hover {
+        background: #b20710;
+    }
 
-    .no-movies {
-        grid-column: 1 / -1;
+    .movie-title-below {
+        padding: 0.8rem;
+    }
+
+    .movie-title-below h5 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .movie-title-below p {
+        font-size: 0.75rem;
+        color: #888;
+        margin-top: 0.2rem;
+    }
+
+    .admin-actions {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0 0.8rem 0.8rem;
+    }
+
+    .admin-actions a, .admin-actions button {
+        flex: 1;
+        padding: 0.4rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
         text-align: center;
-        padding: 6rem 2rem;
-        color: #666;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.2s;
     }
 
-    .no-movies h2 {
-        font-size: 2rem;
+    .admin-actions a:hover, .admin-actions button:hover {
+        opacity: 0.8;
+    }
+
+    .btn-edit {
+        background: #f39c12;
+        color: #fff;
+    }
+
+    .btn-delete {
+        background: #e50914;
+        color: #fff;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 5rem 1rem;
+        color: #555;
+    }
+
+    .empty-state p {
+        font-size: 1.3rem;
         margin-bottom: 1rem;
-        color: #ccc;
     }
 
-    @media (max-width: 768px) {
-        .hero { padding: 0 1.5rem; min-height: 50vh; }
-        .hero h1 { font-size: 2.5rem; }
-        .movies-section { padding: 3rem 1.5rem; }
-        .movies-grid { grid-template-columns: 1fr; }
+    .add-btn {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: #e50914;
+        color: #fff;
+        padding: 1rem 1.5rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.95rem;
+        box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+        transition: all 0.3s;
+        z-index: 50;
+    }
+
+    .add-btn:hover {
+        background: #b20710;
+        transform: translateY(-3px);
+        color: #fff;
     }
 </style>
+{% endblock %}
 
-<!-- HERO -->
-<section class="hero">
-    <div class="hero-content">
-        <span class="hero-badge">🎬 Catalogue complet</span>
-        <h1>Tous les <span>Films</span></h1>
-        <p>Explorez notre catalogue alimenté en temps réel par l'API The Movie Database.</p>
+{% block body %}
+<div class="page-wrapper">
+
+    <div class="page-header">
+        <h1>Notre <span>Catalogue</span></h1>
     </div>
-</section>
 
-<!-- GRID -->
-<section class="movies-section">
-    <div class="movies-grid">
-        {% for movie in movies %}
-            <div class="movie-card">
-                <div class="movie-poster-container">
-                    {% if movie.poster_path %}
-                        <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
-                             alt="{{ movie.title }}"
-                             class="movie-poster"
-                             loading="lazy">
-                    {% else %}
-                        <div class="movie-no-poster">🎥</div>
+    <form method="get" action="{{ path('app_movies_index') }}" class="search-bar">
+        <input type="text" name="search" placeholder="Rechercher un film..." value="{{ searchTerm }}">
+        <button type="submit">🔍 Rechercher</button>
+        {% if searchTerm %}
+            <a href="{{ path('app_movies_index') }}" class="reset-btn">✕</a>
+        {% endif %}
+    </form>
+
+    {% if searchTerm %}
+        <p class="results-info">
+            Résultats pour <strong>"{{ searchTerm }}"</strong>
+            — {{ movies|length }} film{{ movies|length > 1 ? 's' : '' }}
+        </p>
+    {% endif %}
+
+    {% if movies is empty %}
+        <div class="empty-state">
+            <p>😕 Aucun film trouvé</p>
+            {% if searchTerm %}
+                <a href="{{ path('app_movies_index') }}" style="color: #e50914;">Voir tous les films</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="movies-grid">
+            {% for movie in movies %}
+                <div class="movie-card">
+                        <div class="no-poster">
+                            🎥
+                            <span>Pas d'affiche</span>
+                        </div>
+
+                    <div class="movie-card-overlay">
+                        <h5>{{ movie.Title }}</h5>
+                        <p>📅 {{ movie.Date ? movie.Date|date('Y') : '—' }}</p>
+                        <a href="{{ path('app_movies_show', {'id': movie.id}) }}" class="btn-voir">Voir le film →</a>
+                    </div>
+
+                    <div class="movie-title-below">
+                        <h5>{{ movie.Title }}</h5>
+                        <p>{{ movie.Date ? movie.Date|date('Y') : 'Année inconnue' }}</p>
+                    </div>
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="admin-actions">
+                            <a href="{{ path('app_movies_edit', {'id': movie.id}) }}" class="btn-edit">✏️ Modifier</a>
+                            <form method="post" action="{{ path('app_movies_delete', {'id': movie.id}) }}"
+                                  onsubmit="return confirm('Supprimer {{ movie.Title }} ?')" style="flex:1; display:flex;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ movie.id) }}">
+                                <button type="submit" class="btn-delete" style="flex:1;">🗑 Supprimer</button>
+                            </form>
+                        </div>
                     {% endif %}
                 </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-                <div class="movie-content">
-                    <h3 class="movie-title">{{ movie.title }}</h3>
+    {% if is_granted('ROLE_ADMIN') %}
+        <a href="{{ path('app_movies_new') }}" class="add-btn">+ Ajouter un film</a>
+    {% endif %}
 
-                    <div class="movie-meta">
-                        <span>{{ movie.release_date ?: 'À venir' }}</span>
-                        <span class="movie-rating">
-                            {{ movie.vote_average ? movie.vote_average|number_format(1) : '?' }}/10
-                        </span>
-                    </div>
-
-                    <p class="movie-overview">{{ movie.overview }}</p>
-
-                    <div class="movie-actions">
-                        <a href="{{ path('app_movies_show', {'id': movie.id}) }}" class="btn-primary">
-                            Voir détails →
-                        </a>
-                    </div>
-                </div>
-            </div>
-        {% else %}
-            <div class="no-movies">
-                <div style="font-size: 5rem; margin-bottom: 1.5rem;">🎬</div>
-                <h2>Aucun film disponible</h2>
-                <p>Revenez bientôt pour découvrir notre sélection !</p>
-            </div>
-        {% endfor %}
-    </div>
-</section>
-
+</div>
 {% endblock %}

@@ -16,6 +16,28 @@ class MoviesRepository extends ServiceEntityRepository
         parent::__construct($registry, Movies::class);
     }
 
+    // Requête pour un film avant cette année de sortie avec un int $year
+    // Select * from movies where release_date < :date 
+    public function findMoviesReleasebefore(int $year): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.Date < :date')
+            ->setParameter('date', new \DateTimeImmutable($year . '-01-01'))
+            ->orderBy('m.Date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function search(string $term): array
+    {
+    return $this->createQueryBuilder('m')
+        ->where('m.Title LIKE :term')  
+        ->setParameter('term', '%' . $term . '%')
+        ->orderBy('m.Title', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
+
     //    /**
     //     * @return Movies[] Returns an array of Movies objects
     //     */

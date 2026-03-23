@@ -127,7 +127,10 @@
 					{% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_movies_new') }}">Ajouter un film</a> 				
                     {% endif %}
-					<a href="#">Contact</a>
+					<a href="{{ path('app_contact') }}">Contact</a>
+					{% if app.user %}
+						<a href="{{ path('app_logout') }}">Déconnexion</a>
+					{% endif %}
 				</div>
 			</nav>
 			{% for message in app.flashes('error') %}

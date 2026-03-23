@@ -3,16 +3,30 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ContactController extends AbstractController
 {
-    #[Route('/contact', name: 'contact_index')]
-    public function contactIndex(): Response
+    #[Route('/contact', name: 'app_contact')]
+    public function index(Request $request): Response
     {
-        $response = new Response('Contacter');
-        return $response; 
+        if ($request->isMethod('POST')) {
+            $name    = $request->request->get('name');
+            $email   = $request->request->get('email');
+            $message = $request->request->get('message');
+
+            // Validation basique
+            if ($name && $email && $message) {
+                $this->addFlash('success', '✅ Message envoyé avec succès ! Nous vous répondrons bientôt.');
+            } else {
+                $this->addFlash('error', '🚫 Veuillez remplir tous les champs.');
+            }
+
+            return $this->redirectToRoute('app_contact');
+        }
+
+        return $this->render('contact/index.html.twig');
     }
 }

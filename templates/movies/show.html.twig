@@ -1,257 +1,342 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-	{{ movie.title }}
-	- MovieDB
+{% block title %}{{ movie.Title }}{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .show-wrapper {
+        padding-top: 80px;
+        min-height: 100vh;
+        background: #0d0d0d;
+    }
+
+    .movie-hero {
+        background: linear-gradient(135deg, #1a0000, #0d0d0d);
+        border-bottom: 2px solid #e50914;
+        padding: 4rem 2rem 3rem;
+        text-align: center;
+    }
+
+    .movie-hero h1 {
+        font-size: 2.8rem;
+        font-weight: 800;
+        color: #fff;
+        margin-bottom: 1rem;
+    }
+
+    .movie-meta {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .movie-meta span {
+        color: #aaa;
+        font-size: 0.95rem;
+    }
+
+    .movie-meta a {
+        color: #f39c12;
+        text-decoration: none;
+    }
+
+    .avg-score-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(229, 9, 20, 0.15);
+        border: 1px solid rgba(229, 9, 20, 0.4);
+        padding: 0.5rem 1.2rem;
+        border-radius: 20px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .show-content {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #e50914;
+        display: inline-block;
+    }
+
+    .resume-block {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        color: #ccc;
+        line-height: 1.8;
+        margin-bottom: 3rem;
+    }
+
+    .rating-cta {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .rating-cta a {
+        display: inline-block;
+        padding: 0.9rem 2.5rem;
+        border-radius: 30px;
+        background: #e50914;
+        color: #fff;
+        font-weight: 700;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 8px 25px rgba(229, 9, 20, 0.3);
+    }
+
+    .rating-cta a:hover {
+        background: #b20710;
+        transform: translateY(-2px);
+    }
+
+    .reviews-section {
+        margin-bottom: 3rem;
+    }
+
+    .review-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1rem;
+        transition: border-color 0.3s;
+    }
+
+    .review-card:hover {
+        border-color: rgba(229, 9, 20, 0.3);
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 0.6rem;
+    }
+
+    .reviewer-name {
+        font-weight: 700;
+        color: #fff;
+        font-size: 0.95rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .review-stars {
+        font-size: 1rem;
+        letter-spacing: 1px;
+        color: #f39c12;
+    }
+
+    .review-score {
+        color: #666;
+        font-size: 0.8rem;
+        margin-left: 0.3rem;
+    }
+
+    .review-comment {
+        color: #aaa;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-top: 0.8rem;
+        margin-bottom: 0;
+    }
+
+    .btn-delete-review {
+        background: transparent;
+        border: 1px solid rgba(229, 9, 20, 0.4);
+        color: #e50914;
+        padding: 0.3rem 0.7rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .btn-delete-review:hover {
+        background: #e50914;
+        color: #fff;
+    }
+
+    .no-reviews {
+        text-align: center;
+        padding: 2.5rem;
+        color: #555;
+        background: rgba(255,255,255,0.02);
+        border-radius: 12px;
+        border: 1px dashed rgba(255,255,255,0.08);
+        font-size: 0.95rem;
+    }
+
+    .action-bar {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .btn-back {
+        padding: 0.7rem 1.5rem;
+        border-radius: 25px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: transparent;
+        color: #ccc;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+
+    .btn-back:hover {
+        border-color: #fff;
+        color: #fff;
+    }
+
+    .btn-edit-movie {
+        padding: 0.7rem 1.5rem;
+        border-radius: 25px;
+        background: #f39c12;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        transition: opacity 0.2s;
+    }
+
+    .btn-edit-movie:hover {
+        opacity: 0.85;
+        color: #fff;
+    }
+
+    .btn-delete-movie {
+        padding: 0.7rem 1.5rem;
+        border-radius: 25px;
+        background: #e50914;
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .btn-delete-movie:hover {
+        opacity: 0.85;
+    }
+</style>
 {% endblock %}
 
 {% block body %}
-	<style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+<div class="show-wrapper">
 
-		body {
-			font-family: 'Segoe UI', sans-serif;
-			background: #0d0d0d;
-			color: #fff;
-			min-height: 100vh;
-		}
+    {# Hero #}
+    <div class="movie-hero">
+        <h1>{{ movie.Title }}</h1>
+        <div class="movie-meta">
+            <span>📅 {{ movie.Date ? movie.Date|date('d/m/Y') : 'Date inconnue' }}</span>
+            <span>⏱ {{ movie.Time ? movie.Time|date('H:i') : '--:--' }}</span>
+            <span>
+                <a href="https://www.imdb.com/title/tt{{ '%07d'|format(movie.imdbId) }}" target="_blank">
+                    🎬 Voir sur IMDB
+                </a>
+            </span>
+        </div>
+        {% if avgScore %}
+            <div class="avg-score-badge">
+                ⭐ {{ avgScore|number_format(1) }}/5
+                <span style="color: #aaa; font-weight: 400; font-size: 0.85rem;">
+                    — {{ ratings|length }} avis
+                </span>
+            </div>
+        {% else %}
+            <div class="avg-score-badge">⭐ Aucune note pour l'instant</div>
+        {% endif %}
+    </div>
 
-		.movie-hero {
-			min-height: 70vh;
-			background: linear-gradient(to right, rgba(13,13,13,1) 40%, rgba(13,13,13,0.4) 100%), linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(13, 13, 13, 1) 100%), url('https://image.tmdb.org/t/p/original{{ movie.backdrop_path }}') center/cover no-repeat;
-			display: flex;
-			align-items: center;
-			padding: 8rem 3rem 4rem;
-			gap: 3rem;
-		}
+    <div class="show-content">
 
-		.movie-poster img {
-			width: 250px;
-			border-radius: 12px;
-			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-			border: 1px solid rgba(255, 255, 255, 0.1);
-		}
+        {# Résumé #}
+        <p class="section-title">📖 Résumé</p>
+        <div class="resume-block">
+            {{ movie.Resume ?? 'Aucun résumé disponible.' }}
+        </div>
 
-		.movie-details {
-			max-width: 700px;
-		}
+        {# Bouton avis #}
+        {% if is_granted('ROLE_USER') %}
+            <div class="rating-cta">
+                <a href="{{ path('app_rating_add', {'id': movie.id}) }}">✍️ Laisser un avis</a>
+            </div>
+        {% endif %}
 
-		.movie-badge {
-			display: inline-block;
-			background: #e50914;
-			color: #fff;
-			font-size: 0.75rem;
-			font-weight: 700;
-			letter-spacing: 2px;
-			text-transform: uppercase;
-			padding: 0.3rem 0.8rem;
-			border-radius: 4px;
-			margin-bottom: 1rem;
-		}
+        {# Avis #}
+        <div class="reviews-section">
+            <p class="section-title">
+                💬 Avis{% if ratings is not empty %} ({{ ratings|length }}){% endif %}
+            </p>
 
-		.movie-details h1 {
-			font-size: 3rem;
-			font-weight: 800;
-			line-height: 1.1;
-			margin-bottom: 1rem;
-		}
+            {% if ratings is empty %}
+                <div class="no-reviews">
+                    Aucun avis pour ce film. Soyez le premier à noter !
+                </div>
+            {% else %}
+                {% for rating in ratings %}
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div>
+                                <div class="reviewer-name">
+                                    {{ rating.movieLover.firstname }} {{ rating.movieLover.lastname }}
+                                </div>
+                                <div class="review-stars">
+                                    {% for i in 1..5 %}
+                                        {% if i <= rating.score %}⭐{% else %}☆{% endif %}
+                                    {% endfor %}
+                                    <span class="review-score">{{ rating.score }}/5</span>
+                                </div>
+                            </div>
+                            {% if rating.movieLover == app.user or is_granted('ROLE_ADMIN') %}
+                                <form method="post" action="{{ path('app_rating_delete', {'id': rating.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ rating.id) }}">
+                                    <button type="submit" class="btn-delete-review">🗑 Supprimer</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        {% if rating.comment %}
+                            <p class="review-comment">{{ rating.comment }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
 
-		.movie-meta {
-			display: flex;
-			gap: 1.5rem;
-			margin-bottom: 1.5rem;
-			flex-wrap: wrap;
-		}
+        {# Actions #}
+        <div class="action-bar">
+            <a href="{{ path('app_movies_index') }}" class="btn-back">← Retour à la liste</a>
+            {% if is_granted('ROLE_ADMIN') %}
+                <a href="{{ path('app_movies_edit', {'id': movie.id}) }}" class="btn-edit-movie">✏️ Modifier</a>
+                <form method="post" action="{{ path('app_movies_delete', {'id': movie.id}) }}"
+                      onsubmit="return confirm('Supprimer ce film ?')">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ movie.id) }}">
+                    <button type="submit" class="btn-delete-movie">🗑 Supprimer</button>
+                </form>
+            {% endif %}
+        </div>
 
-		.meta-item {
-			color: #aaa;
-			font-size: 0.95rem;
-			display: flex;
-			align-items: center;
-			gap: 0.4rem;
-		}
-
-		.meta-item strong {
-			color: #fff;
-		}
-
-		.movie-rating {
-			background: #e50914;
-			color: #fff;
-			padding: 0.4rem 1rem;
-			border-radius: 20px;
-			font-weight: 700;
-			font-size: 1rem;
-		}
-
-		.movie-overview {
-			color: #ccc;
-			font-size: 1.05rem;
-			line-height: 1.7;
-			margin-bottom: 2rem;
-		}
-
-		.movie-genres {
-			display: flex;
-			gap: 0.5rem;
-			flex-wrap: wrap;
-			margin-bottom: 2rem;
-		}
-
-		.genre-tag {
-			background: rgba(255, 255, 255, 0.08);
-			border: 1px solid rgba(255, 255, 255, 0.2);
-			color: #fff;
-			padding: 0.3rem 0.9rem;
-			border-radius: 20px;
-			font-size: 0.85rem;
-			transition: border-color 0.3s;
-		}
-
-		.genre-tag:hover {
-			border-color: #e50914;
-		}
-
-		.movie-actions {
-			display: flex;
-			gap: 1rem;
-		}
-
-		.btn-primary {
-			background: #e50914;
-			color: #fff;
-			padding: 0.9rem 2rem;
-			border-radius: 8px;
-			text-decoration: none;
-			font-weight: 600;
-			font-size: 1rem;
-			transition: background 0.3s;
-			display: inline-block;
-		}
-
-		.btn-primary:hover {
-			background: #c40812;
-		}
-
-		.btn-secondary {
-			background: rgba(255, 255, 255, 0.1);
-			color: #fff;
-			padding: 0.9rem 2rem;
-			border-radius: 8px;
-			text-decoration: none;
-			font-weight: 600;
-			font-size: 1rem;
-			border: 1px solid rgba(255, 255, 255, 0.3);
-			transition: background 0.3s;
-			display: inline-block;
-		}
-
-		.btn-secondary:hover {
-			background: rgba(255, 255, 255, 0.2);
-		}
-
-		@media(max-width: 768px) {
-			.movie-hero {
-				flex-direction: column;
-				padding: 6rem 1.5rem 3rem;
-				text-align: center;
-			}
-
-			.movie-poster img {
-				width: 180px;
-			}
-			.movie-details h1 {
-				font-size: 2rem;
-			}
-			.movie-meta {
-				justify-content: center;
-			}
-			.movie-genres {
-				justify-content: center;
-			}
-			.movie-actions {
-				justify-content: center;
-			}
-		}
-		.btn-delete {
-			background: rgba(229, 9, 20, 0.2);
-			color: #e50914;
-			padding: 0.9rem 2rem;
-			border-radius: 8px;
-			font-weight: 600;
-			font-size: 1rem;
-			border: 1px solid #e50914;
-			cursor: pointer;
-			transition: all 0.3s;
-		}
-
-		.btn-delete:hover {
-			background: #e50914;
-			color: #fff;
-		}
-	</style>
-
-	<section class="movie-hero">
-		<div class="movie-poster">
-			{% if movie.poster_path %}
-				<img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}">
-			{% else %}
-				<div style="width:250px; height:375px; background:#1a1a1a; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:4rem;">🎥</div>
-			{% endif %}
-		</div>
-
-		<div class="movie-details">
-			<span class="movie-badge">🎬 Détails du film</span>
-
-			<h1>{{ movie.title }}</h1>
-
-			<div class="movie-meta">
-				<span class="meta-item">📅
-					<strong>{{ movie.release_date ?: 'Inconnue' }}</strong>
-				</span>
-				<span class="meta-item">⏱
-					<strong>{{ movie.runtime ? movie.runtime ~ ' min' : 'N/A' }}</strong>
-				</span>
-				<span class="meta-item">🌍
-					<strong>{{ movie.original_language|upper }}</strong>
-				</span>
-				<span class="movie-rating">⭐
-					{{ movie.vote_average ? movie.vote_average|number_format(1) : 'N/A' }}/10</span>
-			</div>
-
-			{% if movie.genres %}
-				<div class="movie-genres">
-					{% for genre in movie.genres %}
-						<span class="genre-tag">{{ genre.name }}</span>
-					{% endfor %}
-				</div>
-			{% endif %}
-
-			<p class="movie-overview">{{ movie.overview ?: 'Aucun synopsis disponible.' }}</p>
-			{% if is_granted('ROLE_ADMIN') %}
-				<div class="movie-actions">
-					<a href="{{ path('app_movies_index') }}" class="btn-secondary">← Retour</a>
-					<a href="{{ path('app_movies_edit', {'id': movie.id}) }}" class="btn-primary">✏️ Modifier</a>
-					<form method="post" action="{{ path('app_movies_delete', {'id': movie.id}) }}" style="display:inline;">
-						<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ movie.id) }}">
-						<button type="submit" class="btn-delete" onclick="return confirm('Supprimer ce film ?')">
-							🗑️ Supprimer
-						</button>
-					</form>
-				</div>
-			{% endif %}
-
-			<div class="movie-actions">
-				<a href="{{ path('app_movies_index') }}" class="btn-secondary">← Retour aux films</a>
-				{% if movie.homepage %}
-					<a href="{{ movie.homepage }}" target="_blank" class="btn-primary">Site officiel</a>
-				{% endif %}
-			</div>
-		</div>
-	</section>
-
+    </div>
+</div>
 {% endblock %}
